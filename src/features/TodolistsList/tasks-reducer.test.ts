@@ -1,4 +1,4 @@
-import {addTaskAC, removeTaskAC, setTasksAC, tasksReducer, TasksStateType, updateTaskAC} from './tasks-reducer'
+import {addTaskAC, fetchTasksTC, tasksReducer, TasksStateType, updateTaskAC, removeTaskTC} from './tasks-reducer'
 import {addTodolistAC, removeTodolistAC, setTodolistsAC} from './todolists-reducer'
 import {TaskPriorities, TaskStatuses} from '../../api/todolists-api'
 
@@ -25,7 +25,8 @@ beforeEach(() => {
 });
 
 test('correct task should be deleted from correct array', () => {
-    const action = removeTaskAC({taskId: "2", todolistId: "todolistId2"});
+    let param = {taskId: "2", todolistId: "todolistId2"};
+    const action = removeTaskTC.fulfilled(param, 'requestId', param);
 
     const endState = tasksReducer(startState, action)
 
@@ -34,7 +35,6 @@ test('correct task should be deleted from correct array', () => {
     expect(endState["todolistId2"].every(t => t.id != "2")).toBeTruthy();
 });
 test('correct task should be added to correct array', () => {
-    //const action = addTaskAC("juce", "todolistId2");
     let task = {
         todoListId: "todolistId2",
         title: "juce",
@@ -120,7 +120,7 @@ test('empty arrays should be added when we set todolists', () => {
     expect(endState['2']).toBeDefined()
 })
 test('tasks should be added for todolist', () => {
-    const action = setTasksAC({tasks : startState["todolistId1"], todolistId :"todolistId1"});
+    const action = fetchTasksTC.fulfilled({tasks : startState["todolistId1"], todolistId :"todolistId1"}, '', "todolistId1");
 
     const endState = tasksReducer({
         "todolistId2": [],
