@@ -1,13 +1,19 @@
 import React from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, TextField, Button, Grid} from '@material-ui/core'
-import {useFormik} from 'formik'
-import {useDispatch, useSelector} from 'react-redux'
+import {FormikHelpers, useFormik} from 'formik'
+import {useSelector} from 'react-redux'
 import {loginTC} from './auth-reducer'
-import {AppRootStateType} from '../../app/store'
+import {AppRootStateType, useAppDispatch} from '../../app/store'
 import { Redirect } from 'react-router-dom'
 
+type FromValuesType = {
+    email: string
+    password: string
+    rememberMe: boolean
+}
+
 export const Login = () => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
 
@@ -30,8 +36,14 @@ export const Login = () => {
             password: '',
             rememberMe: false
         },
-        onSubmit: values => {
-            dispatch(loginTC(values));
+        onSubmit: async (values:FromValuesType, formikHelpers:FormikHelpers<FromValuesType>) => {
+           const action = await dispatch(loginTC(values));
+           if (loginTC.rejected.match(action)){
+               if (action.payload?.fieldsErrors?.length){
+                   const error = action.payload?.fieldsErrors[0]
+                   formikHelpers.setFieldError(error.field, error.error)
+               }
+           }
         },
     })
 
@@ -47,7 +59,7 @@ export const Login = () => {
                     <FormLabel>
                         <p>
                             To log in get registered <a href={'https://social-network.samuraijs.com/'}
-                                                        target={'_blank'}>here</a>
+                                                        target={'_blank'}  rel="noopener noreferrer" >here</a>
                         </p>
                         <p>
                             or use common test account credentials:

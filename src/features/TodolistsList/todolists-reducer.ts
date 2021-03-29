@@ -1,14 +1,11 @@
 import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {
-    initializeAppTC,
     RequestStatusType,
-    SetAppErrorActionType,
     setAppStatusAC,
-    SetAppStatusActionType
 } from '../../app/app-reducer'
 import {handleServerNetworkError} from '../../utils/error-utils'
-import {createSlice, PayloadAction, ThunkDispatch} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
 const initialState: Array<TodolistDomainType> = []
 
